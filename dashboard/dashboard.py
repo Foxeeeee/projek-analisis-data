@@ -4,13 +4,27 @@ import pandas as pd
 import streamlit as st
 
 
-mean_df = pd.read_csv('dataset/mean_season_hour.csv')
-casual_registered_df = pd.read_csv('dataset/casual_registered.csv')
-pm_df = pd.read_csv('dataset/pm_hour.csv')
-am_df = pd.read_csv('dataset/am_hour.csv')
+df = pd.read_csv('./dashboard/main_data.csv')
+
+mean_df = df.groupby(by='season')['cnt'].mean().sort_values().reset_index()
+casual_registered_df = df.groupby(by='season')[['casual', 'registered']].nunique().reset_index()
+casual_registered_df = pd.melt(
+    casual_registered_df, 
+    id_vars=['season'], 
+    value_vars=['casual', 'registered'], 
+    var_name='cust_type', 
+    value_name='count'
+)
+hour_df = df.groupby('hr')[['casual', 'registered']].nunique().reset_index()
+hour_df = pd.melt(
+    hour_df,
+    id_vars=['hr'],
+    value_vars=['casual', 'registered'],
+    var_name='cust_type',
+    value_name='count'
+)
 
 st.title('Bicycle Rental Dashboard :sparkles:')
-
 
 st.subheader('Average bicycle renter each season')
 
@@ -47,10 +61,12 @@ sns.barplot(
 st.pyplot(fig)
 
 st.subheader('Most popular customer type in each season')
+colors = ["#D3D3D3", "#72BCD4"]
 sns.barplot(
     x='season',
     y='count',
     data=casual_registered_df,
+    palette=colors,
     hue='cust_type'
 )
 
@@ -59,27 +75,16 @@ plt.grid(True, alpha=0.3)
 st.pyplot(fig)
 
 st.subheader('Most popular customer type between 12 PM - 11 PM')
+colors = ["#D3D3D3", "#72BCD4"]
 fig, ax = plt.subplots(figsize=(12, 7))
+
 sns.barplot(
     x='hr',
     y='count',
-    data=pm_df,
-    hue='cust_type',
-    ax=ax
+    data=hour_df,
+    palette=colors,
+    hue='cust_type'
 )
 
-ax.grid(True, alpha=0.3)
-st.pyplot(fig=fig)
-
-st.subheader('Most popular customer type between 12 AM - 11 AM')
-fig, ax = plt.subplots(figsize=(12, 7))
-sns.barplot(
-    x='hr',
-    y='count',
-    data=am_df,
-    hue='cust_type',
-    ax=ax
-)
-
-ax.grid(True, alpha=0.3)
-st.pyplot(fig=fig)
+plt.grid(True, alpha=0.3)
+st.pyplot(fig)
