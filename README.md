@@ -1,12 +1,10 @@
-# Bicycle Rent Dashboard ✨
+# **Bicycle Rent Dashboard** ✨
 
-**Overview**
+## **Overview**
 
-```
 This project provides an interactive dashboard for exploring bike-sharing data trends, built using Streamlit. The dashboard allows users to visualize bike rentals by casual and registered users, examine seasonal and monthly trends, and filter data interactively.
-```
 
-**Usage**
+## **Usage**
 
 ### Step 1: Clone the Repository
 
